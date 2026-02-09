@@ -10,7 +10,7 @@ export default function handler(req, res) {
   if (!global.wss) {
     global.wss = new WebSocketServer({ noServer: true });
 
-    // Atualização periódica
+    // Atualização periódica do boss
     setInterval(() => {
       boss.x += Math.random() > 0.5 ? 1 : -1;
       boss.y += Math.random() > 0.5 ? 1 : -1;
