@@ -6,16 +6,6 @@
       "use": "@vercel/node"
     }
   ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "https://playjogosgratis.com" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
-      ]
-    }
-  ],
   "routes": [
     {
       "src": "/(.*)",
@@ -25,8 +15,7 @@
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type"
       },
-      "status": 200,
-      "continue": false
+      "status": 200
     },
     { "src": "/score",   "dest": "/api/index.js" },
     { "src": "/ranking", "dest": "/api/index.js" },
