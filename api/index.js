@@ -76,16 +76,22 @@ app.post("/score", async (req, res) => {
     const ref = db.ref("ranking").child(firebaseKey);
 
     // Salva apenas se for recorde
-    const snapshot = await ref.once("value");
-    const existing = snapshot.val();
+    // Timeout interno (8s) para garantir resposta antes do Gateway Timeout (10s) do Vercel
+    await Promise.race([
+      (async () => {
+        const snapshot = await ref.once("value");
+        const existing = snapshot.val();
 
-    if (!existing || points > existing.points) {
-      await ref.set({
-        player: sanitizedPlayer,
-        points: Math.floor(points),
-        updatedAt: Date.now(),
-      });
-    }
+        if (!existing || points > existing.points) {
+          await ref.set({
+            player: sanitizedPlayer,
+            points: Math.floor(points),
+            updatedAt: Date.now(),
+          });
+        }
+      })(),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Database timeout")), 8000))
+    ]);
 
     return res.status(200).json({ success: true });
   } catch (err) {
