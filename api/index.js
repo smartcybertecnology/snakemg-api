@@ -40,6 +40,11 @@ app.get("/", (req, res) => {
   res.json({ status: "SnakeMG API online" });
 });
 
+// GET /score — Handler para requisições GET (navegador)
+app.get("/score", (req, res) => {
+  res.status(405).json({ error: "Método GET não permitido. Use POST para salvar pontuação." });
+});
+
 // POST /score — salva pontuacao
 app.post("/score", async (req, res) => {
   try {
