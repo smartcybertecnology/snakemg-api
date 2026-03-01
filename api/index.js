@@ -2,15 +2,26 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { initializeApp, getApps } = require("firebase-admin/app");
+const { initializeApp, getApps, cert } = require("firebase-admin/app");
 const { getDatabase } = require("firebase-admin/database");
 
 // ─── Firebase Admin ───────────────────────────────────────────────────────────
 if (!getApps().length) {
-  initializeApp({
+  const config = {
     databaseURL: process.env.FIREBASE_DATABASE_URL,
     databaseAuthVariableOverride: null,
-  });
+  };
+
+  // Usa credenciais explícitas se disponíveis (Correção para Vercel/Serverless)
+  if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    try {
+      config.credential = cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT));
+    } catch (err) {
+      console.error("Erro ao carregar credenciais do Firebase:", err);
+    }
+  }
+
+  initializeApp(config);
 }
 const db = getDatabase();
 
